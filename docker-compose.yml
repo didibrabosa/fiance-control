@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: finance-database
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./configs/migrations/:/docker-entrypoint-initdb.d/
+      - finance-database-vol:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    build: .
+    container_name: finance-api
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  finance-database-vol:
