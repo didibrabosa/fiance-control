@@ -2,3 +2,4 @@ fastApi
 uvicorn
 psycopg2-binary
 pylint
+pydantic
