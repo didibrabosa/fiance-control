@@ -1,4 +1,5 @@
 import logging
+from typing import List
 from psycopg2 import DatabaseError
 from entities.accounts import Accounts
 from configs.db_connection import get_db_connection
@@ -36,3 +37,37 @@ class AccountsRepository:
             self.logger.error(f"Failed to insert account in the database. Error: {ex}")
             self.db.rollback()
             raise
+
+    def get_all_accounts(self) -> List[Accounts]:
+        self.logger.info("Getting every account in database")
+        try:
+            with self.db.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT account_id, account_name, account_status, balance, debt, created_at, updated_at
+                    FROM accounts
+                    WHERE account_status = true
+                    """)
+                rows = cursor.fetchall()
+                accounts_list = []
+
+                for row in rows:
+                    account = self.map_accounts_row_to_model(row)
+                    accounts_list.append(account)
+                
+                return accounts_list
+        except DatabaseError as ex:
+            self.logger.error(f"Failed to insert account in the database. Error: {ex}")
+            self.db.rollback()
+            raise
+
+    def map_accounts_row_to_model(self, row: List) -> Accounts:
+        return Accounts(
+            account_id=row[0],
+            account_name=row[1],
+            account_status=row[2],
+            balance=row[3],
+            debt=row[4],
+            created_at=row[5],
+            updated_at=row[6],
+        )
