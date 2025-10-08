@@ -25,3 +25,7 @@ class AccountsService:
         self.logger.info("Updating account...")
         accounts.updated_at = datetime.now()
         return self.repository.update_accounts(accounts)
+    
+    def delete_accouts(self, id: int) -> Accounts:
+        self.logger.info("Deleting account...")
+        return self.repository.delete_accounts(id)

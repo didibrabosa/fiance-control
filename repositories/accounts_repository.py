@@ -79,7 +79,7 @@ class AccountsRepository:
             raise
 
     def update_accounts(self, accounts: Accounts) -> Accounts:
-        self.logger.info("Updating account in Database")
+        self.logger.info("Updating account in database")
         try:
             with self.db.cursor() as cursor:
                 cursor.execute(
@@ -114,6 +114,26 @@ class AccountsRepository:
             self.logger.error(f"Failed to update account in the database. Error: {ex}")
             self.db.rollback()
             raise
+
+    def delete_accounts(self, id: str) -> None:
+        self.logger.info("Deleting a account in database")
+        try:
+            with self.db.cursor() as cursor:
+                cursor.execute(
+                    """
+                    DELETE FROM accounts
+                    WHERE account_id = %s;
+                    """, (id,))
+                
+                if cursor.rowcount == 0:
+                    raise ValueError(f"Account not found with id {id}")
+
+                self.db.commit()
+        except DatabaseError as ex:
+            self.logger.error(f"Failed to delete account in the database. Error: {ex}")
+            self.db.rollback()
+            raise
+            
 
     def map_accounts_row_to_model(self, row: List) -> Accounts:
         return Accounts(

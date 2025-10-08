@@ -35,3 +35,9 @@ def update_accounts(id: int, account: Accounts):
 
     logger.debug(f"Updated account = {account_updated}")
     return account_updated
+
+@router.delete("/accounts/{id}")
+def delete_accounts(id: int):
+    logger.debug("Starting to delete a account...")
+    service.delete_accouts(id)
+    return
