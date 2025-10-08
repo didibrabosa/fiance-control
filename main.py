@@ -1,9 +1,12 @@
 import logging
-from controller.accounts_controller import router
+from routers.accounts_router import router
 
 from fastapi import FastAPI
 
-logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+)
 
 app = FastAPI(title= "Finance API")
 app.include_router(router)
