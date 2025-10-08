@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 class Accounts(BaseModel):
-    account_id: Optional[int] = Field(None, description="ID da conta, gerado automaticamente")
+    account_id: Optional[int] = Field(None, description="Account id")
     account_name: str = Field(..., description="Account name")
     account_status: bool = Field(default=True, description="Account status")
     balance: float = Field(default=0.00, description="Account balance")
