@@ -57,7 +57,24 @@ class AccountsRepository:
                 
                 return accounts_list
         except DatabaseError as ex:
-            self.logger.error(f"Failed to insert account in the database. Error: {ex}")
+            self.logger.error(f"Failed to getting accounts in the database. Error: {ex}")
+            self.db.rollback()
+            raise
+
+    def get_account_by_id(self, id: int) -> Accounts:
+        self.logger.info("Getting a account by id in database")
+        try:
+            with self.db.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT account_id, account_name, account_status, balance, debt, created_at, updated_at
+                    FROM accounts
+                    WHERE account_id = %s;
+                    """, (id,))
+                result = cursor.fetchone()
+                return self.map_accounts_row_to_model(result)
+        except DatabaseError as ex:
+            self.logger.error(f"Failed to getting account in the database. Error: {ex}")
             self.db.rollback()
             raise
 
@@ -94,7 +111,7 @@ class AccountsRepository:
             self.db.commit()
             return accounts
         except DatabaseError as ex:
-            self.logger.error(f"Failed on update operation. Error: {ex}")
+            self.logger.error(f"Failed to update account in the database. Error: {ex}")
             self.db.rollback()
             raise
 

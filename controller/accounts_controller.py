@@ -7,7 +7,7 @@ from configs.db_connection import get_db_connection
 
 logger = logging.getLogger(__name__)
 service = AccountsService(repository=AccountsRepository(db=get_db_connection()))
-router = APIRouter(tags=[Accounts])
+router = APIRouter(tags=["Accounts"])
 
 @router.post("/accounts")
 def create_accounts(account: Accounts):
@@ -21,6 +21,11 @@ def create_accounts(account: Accounts):
 def get_all_accounts():
     logger.debug("Starting to get all accounts...")
     return service.get_all_accounts()
+
+@router.get("/accounts/{id}")
+def get_account_by_id(id: int):
+    logger.debug("Starting to get a account...")
+    return service.get_account_by_id(id) 
 
 @router.put("/accounts/{id}")
 def update_accounts(id: int, account: Accounts):

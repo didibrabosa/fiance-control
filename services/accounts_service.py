@@ -17,6 +17,10 @@ class AccountsService:
         self.logger.info("Getting accounts...")
         return self.repository.get_all_accounts()
     
+    def get_account_by_id(self, id: int) -> Accounts:
+        self.logger.info("Getting account...")
+        return self.repository.get_account_by_id(id)
+    
     def update_accounts(self, accounts: Accounts) -> Accounts:
         self.logger.info("Updating account...")
         accounts.updated_at = datetime.now()
