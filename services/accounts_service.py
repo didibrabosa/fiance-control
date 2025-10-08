@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import List
 from entities.accounts import Accounts
 from repositories.accounts_repository import AccountsRepository
@@ -15,3 +16,8 @@ class AccountsService:
     def get_all_accounts(self) -> List[Accounts]:
         self.logger.info("Getting accounts...")
         return self.repository.get_all_accounts()
+    
+    def update_accounts(self, accounts: Accounts) -> Accounts:
+        self.logger.info("Updating account...")
+        accounts.updated_at = datetime.now()
+        return self.repository.update_accounts(accounts)

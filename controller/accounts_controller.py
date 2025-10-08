@@ -11,13 +11,22 @@ router = APIRouter(tags=[Accounts])
 
 @router.post("/accounts")
 def create_accounts(account: Accounts):
-    logger.debug("Started to creating a account...")
+    logger.debug("Starting to create a account...")
     account_created = service.create_accounts(account)
 
-    logger.debug(f"Created account = {account}")
+    logger.debug(f"Created account = {account_created}")
     return account_created
 
 @router.get("/accounts")
 def get_all_accounts():
-    logger.debug("Started to getting the accounts...")
+    logger.debug("Starting to get all accounts...")
     return service.get_all_accounts()
+
+@router.put("/accounts/{id}")
+def update_accounts(id: int, account: Accounts):
+    logger.debug("Starting to updat a account... ")
+    account.account_id = id
+    account_updated = service.update_accounts(account)
+
+    logger.debug(f"Updated account = {account_updated}")
+    return account_updated

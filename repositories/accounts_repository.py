@@ -61,6 +61,43 @@ class AccountsRepository:
             self.db.rollback()
             raise
 
+    def update_accounts(self, accounts: Accounts) -> Accounts:
+        self.logger.info("Updating account in Database")
+        try:
+            with self.db.cursor() as cursor:
+                cursor.execute(
+                    """
+                    UPDATE accounts
+                    SET 
+                        account_name = %s,
+                        account_status = %s,
+                        balance = %s,
+                        debt = %s,
+                        updated_at = %s
+                    WHERE account_id = %s
+                    RETURNING account_id;
+                    """,
+                    (
+                        accounts.account_name,
+                        accounts.account_status,
+                        accounts.balance,
+                        accounts.debt,
+                        accounts.updated_at,
+                        accounts.account_id
+                    ),
+                )
+                result = cursor.fetchone()
+
+                if result is None:
+                    raise ValueError(f"Account with id {accounts.account_id} not found.")
+
+            self.db.commit()
+            return accounts
+        except DatabaseError as ex:
+            self.logger.error(f"Failed on update operation. Error: {ex}")
+            self.db.rollback()
+            raise
+
     def map_accounts_row_to_model(self, row: List) -> Accounts:
         return Accounts(
             account_id=row[0],
